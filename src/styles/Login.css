@@ -1,0 +1,131 @@
+/* src/styles/Login.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+html,
+body,
+.login-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fcfaf1;
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 25%,
+    transparent 25%
+  );
+  background-size: 600px 600px;
+  min-height: 100vh;
+}
+
+/* Move the form up a bit */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;   /* align to top */
+  padding: 60px 20px 20px;   /* extra top padding */
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ... rest of your CSS unchanged ... */
+
+.star-icon {
+  position: absolute;
+  top: -30px;
+  right: 160px;
+  font-size: 24px;
+  color: #333;
+}
+
+.login-header {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.password-field {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  cursor: pointer;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.checkbox-container input {
+  margin-right: 10px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.create-account {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.create-account a {
+  color: #333;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  margin-top: 4px;
+  font-size: 0.9rem;
+}

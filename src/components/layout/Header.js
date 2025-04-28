@@ -1,71 +1,142 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
-  const { user, logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const [hovered, setHovered] = useState(null);
+  const hoverColor = '#c0a080';
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const getNavStyle = (key) => ({
+    ...styles.navLink,
+    color: hovered === key ? hoverColor : styles.navLink.color
+  });
+
+  const getAuthStyle = (key) => ({
+    ...styles.loginButton,
+    color: hovered === key ? hoverColor : styles.loginButton.color,
+    borderColor: hovered === key ? hoverColor : styles.loginButton.borderColor
+  });
 
   return (
-    <header className="bg-dark text-white shadow-md">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Link to="/" className="text-xl font-bold text-white hover:text-gray-200">
-              OptiUrban
-            </Link>
-          </div>
-          
-          <nav className="flex items-center space-x-6">
-            <Link to="/" className="text-white hover:text-gray-200">
-              Home
-            </Link>
-            
-            {isAuthenticated ? (
-              <>
-                <Link to="/input" className="text-white hover:text-gray-200">
-                  Input Data
-                </Link>
-                <Link to="/results" className="text-white hover:text-gray-200">
-                  Results
-                </Link>
-                <div className="relative group">
-                  <button className="flex items-center space-x-1 text-white hover:text-gray-200">
-                    <span>{user?.name || user?.username}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <Link to="/signin" className="text-white hover:text-gray-200">
-                  Sign In
-                </Link>
-                <Link to="/signup" className="btn-primary">
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
+    <header style={styles.header}>
+      <Link
+        to="/"
+        style={styles.logo}
+      >
+        OptiUrban
+      </Link>
+
+      <nav style={styles.navMenu}>
+        <Link
+          to="/"
+          style={getNavStyle('home')}
+          onMouseEnter={() => setHovered('home')}
+          onMouseLeave={() => setHovered(null)}
+        >
+          HOME
+        </Link>
+        <Link
+          to="/About"
+          style={getNavStyle('about')}
+          onMouseEnter={() => setHovered('about')}
+          onMouseLeave={() => setHovered(null)}
+        >
+          ABOUT
+        </Link>
+        <Link
+          to="/contact"
+          style={getNavStyle('contact')}
+          onMouseEnter={() => setHovered('contact')}
+          onMouseLeave={() => setHovered(null)}
+        >
+          CONNECT WITH US
+        </Link>
+      </nav>
+
+      <div style={styles.authContainer}>
+        <Link
+          to="/signin"
+          style={getAuthStyle('login')}
+          onMouseEnter={() => setHovered('login')}
+          onMouseLeave={() => setHovered(null)}
+        >
+          Sign In
+        </Link>
+        <Link
+          to="/signup"
+          style={getAuthStyle('signup')}
+          onMouseEnter={() => setHovered('signup')}
+          onMouseLeave={() => setHovered(null)}
+        >
+          Sign up
+        </Link>
       </div>
+
+      <div style={styles.headerLine}></div>
     </header>
   );
+};
+
+const styles = {
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '1rem 2rem',
+    backgroundColor: '#333333',
+    borderBottom: '1px solid #444',
+    position: 'relative',
+  },
+  logo: {
+    fontFamily: 'Georgia, serif',
+    fontSize: '2.6rem',
+    color: '#c0a080',
+    fontWeight: 300,
+    textDecoration: 'none',
+    marginRight: '2rem',
+  },
+  navMenu: {
+    display: 'flex',
+    gap: '1.5rem',
+    flexGrow: 1,
+  },
+  navLink: {
+    color: '#ffffff',
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    fontSize: '0.9rem',
+    letterSpacing: '0.5px',
+  },
+  authContainer: {
+    display: 'flex',
+    gap: '0.5rem',
+  },
+  loginButton: {
+    color: '#ffffff',
+    textDecoration: 'none',
+    padding: '0.5rem 1rem',
+    borderRadius: '2rem',
+    border: '1px solid #666',
+    fontSize: '0.9rem',
+    display: 'inline-block',
+    borderColor: '#666',
+  },
+  signupButton: { // same as login
+    color: '#ffffff',
+    textDecoration: 'none',
+    padding: '0.5rem 1rem',
+    borderRadius: '2rem',
+    border: '1px solid #666',
+    fontSize: '0.9rem',
+    display: 'inline-block',
+    borderColor: '#666',
+  },
+  headerLine: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '1px',
+    backgroundColor: '#555',
+  },
 };
 
 export default Header;
