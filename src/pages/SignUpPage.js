@@ -5,11 +5,15 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/Login.css';
 
-const SignUpPage = () => {
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+export default function SignUpPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues
+  } = useForm();
   const [submitError, setSubmitError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const { signup, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -37,24 +41,32 @@ const SignUpPage = () => {
           <h1 className="login-header">Sign Up</h1>
 
           {submitError && (
-            <div style={{ marginBottom: '1rem', color: 'red', textAlign: 'center' }}>
+            <div className="error" style={{ textAlign: 'center', marginBottom: '1rem' }}>
               {submitError}
             </div>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Email */}
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
                 id="email"
                 type="email"
                 className="form-control"
-                placeholder="Your email"
-                {...register('email', { required: 'Email is required' })}
+                placeholder="you@example.com"
+                {...register('email', {
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Invalid email address'
+                  }
+                })}
               />
               {errors.email && <p className="error">{errors.email.message}</p>}
             </div>
 
+            {/* Username */}
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <input
@@ -62,11 +74,20 @@ const SignUpPage = () => {
                 type="text"
                 className="form-control"
                 placeholder="Your username"
-                {...register('username', { required: 'Username is required' })}
+                {...register('username', {
+                  required: 'Username is required',
+                  minLength: { value: 3, message: 'At least 3 characters' },
+                  maxLength: { value: 20, message: 'Up to 20 characters' },
+                  pattern: {
+                    value: /^[A-Za-z0-9_]+$/,
+                    message: 'Only letters, numbers & underscore'
+                  }
+                })}
               />
               {errors.username && <p className="error">{errors.username.message}</p>}
             </div>
 
+            {/* Password */}
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <div className="password-field">
@@ -74,10 +95,15 @@ const SignUpPage = () => {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   className="form-control"
-                  placeholder="Your password"
+                  placeholder="At least 8 chars, 1 upper, 1 number, 1 symbol"
                   {...register('password', {
                     required: 'Password is required',
-                    minLength: { value: 6, message: 'At least 6 characters' }
+                    minLength: { value: 8, message: 'At least 8 characters' },
+                    pattern: {
+                      value: /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
+                      message:
+                        'Need uppercase, number & special character'
+                    }
                   })}
                 />
                 <span
@@ -91,23 +117,24 @@ const SignUpPage = () => {
               {errors.password && <p className="error">{errors.password.message}</p>}
             </div>
 
+            {/* Confirm Password */}
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirm Password</label>
               <div className="password-field">
                 <input
                   id="confirmPassword"
-                  type={showConfirm ? 'text' : 'password'}
+                  type={showPassword ? 'text' : 'password'}
                   className="form-control"
-                  placeholder="Your password"
+                  placeholder="Repeat your password"
                   {...register('confirmPassword', {
                     required: 'Please confirm password',
-                    validate: value =>
-                      value === getValues('password') || 'Passwords do not match'
+                    validate: (val) =>
+                      val === getValues('password') || 'Passwords do not match'
                   })}
                 />
                 <span
                   className="eye-icon"
-                  onClick={() => setShowConfirm(!showConfirm)}
+                  onClick={() => setShowPassword(!showPassword)}
                   style={{ cursor: 'pointer' }}
                 >
                   👁️
@@ -118,6 +145,7 @@ const SignUpPage = () => {
               )}
             </div>
 
+            {/* Terms */}
             <div className="checkbox-container">
               <input
                 type="checkbox"
@@ -125,21 +153,21 @@ const SignUpPage = () => {
                 {...register('terms', { required: 'You must accept the terms' })}
               />
               <label htmlFor="terms">I accept the terms and privacy policy</label>
+              {errors.terms && <p className="error">{errors.terms.message}</p>}
             </div>
 
+            {/* Submit */}
             <button type="submit" className="login-btn" disabled={loading}>
               {loading ? '…' : 'Sign up'}
             </button>
           </form>
 
           <div className="create-account">
-            <span>You already have account?</span>{' '}
+            <span>Already have an account?</span>{' '}
             <Link to="/signin">Log in</Link>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default SignUpPage;
+}
