@@ -10,6 +10,7 @@ const ResultsPage = () => {
   const [mapImage, setMapImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -53,6 +54,12 @@ const ResultsPage = () => {
       console.error('Error fetching map:', err);
       // Don't set general error - just log it
     }
+  };
+
+  const handleYearSelect = (year) => {
+    setSelectedYear(year);
+    // Here you would typically fetch or calculate data based on the selected year
+    console.log(`Selected year: ${year}`);
   };
 
   // Mock data for demonstration - replace with actual data from your API
@@ -151,6 +158,67 @@ const ResultsPage = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Estimation Section */}
+      <div className="card bg-amber-50 p-6 rounded-lg">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Estimation</h2>
+        <p className="text-gray-600 mb-8">
+          Estimate Services Demands within Expected Interval with its Estimate Allocation.
+        </p>
+        
+        <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+          <button 
+            className={`bg-gray-800 text-white py-4 px-6 rounded-md hover:bg-gray-700 transition-colors ${selectedYear === 1 ? 'ring-2 ring-offset-2 ring-gray-500' : ''}`}
+            onClick={() => handleYearSelect(1)}
+          >
+            1 yrs
+          </button>
+          <button 
+            className={`bg-gray-800 text-white py-4 px-6 rounded-md hover:bg-gray-700 transition-colors ${selectedYear === 2 ? 'ring-2 ring-offset-2 ring-gray-500' : ''}`}
+            onClick={() => handleYearSelect(2)}
+          >
+            2 yrs
+          </button>
+          <button 
+            className={`bg-gray-800 text-white py-4 px-6 rounded-md hover:bg-gray-700 transition-colors ${selectedYear === 5 ? 'ring-2 ring-offset-2 ring-gray-500' : ''}`}
+            onClick={() => handleYearSelect(5)}
+          >
+            5 yrs
+          </button>
+          <button 
+            className={`bg-gray-800 text-white py-4 px-6 rounded-md hover:bg-gray-700 transition-colors ${selectedYear === 8 ? 'ring-2 ring-offset-2 ring-gray-500' : ''}`}
+            onClick={() => handleYearSelect(8)}
+          >
+            8 yrs
+          </button>
+          <button 
+            className={`bg-gray-800 text-white py-4 px-6 rounded-md hover:bg-gray-700 transition-colors ${selectedYear === 10 ? 'ring-2 ring-offset-2 ring-gray-500' : ''}`}
+            onClick={() => handleYearSelect(10)}
+          >
+            10 yrs
+          </button>
+        </div>
+        
+        {selectedYear && (
+          <div className="mt-6 p-4 bg-white rounded-md shadow-sm">
+            <h3 className="text-lg font-semibold mb-2">Projected Needs for {selectedYear} Years</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Estimated Population</p>
+                <p className="font-medium">{Math.round((inputData?.population || 50000) * (1 + selectedYear * 0.02))}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Additional Facilities</p>
+                <p className="font-medium">{Math.ceil(selectedYear / 2)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Estimated Budget</p>
+                <p className="font-medium">${(selectedYear * 1.5).toFixed(1)}M</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Optimal Locations Table */}
