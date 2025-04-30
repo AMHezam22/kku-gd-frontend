@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../hooks/useAuth';
+import { BASE_URL, AUTH_LOGIN } from '../api/endpoints';
 
 const SignInPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [submitError, setSubmitError] = useState(null);
-  const { login, loading, isAuthenticated } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [successMessage, setSuccessMessage] = useState('');
@@ -18,6 +19,14 @@ const SignInPage = () => {
     }
   }, [location.state]);
 
+  // Check if user is already authenticated
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
@@ -28,12 +37,42 @@ const SignInPage = () => {
   const onSubmit = async (data) => {
     try {
       setSubmitError(null);
-      const success = await login(data.username, data.password);
-      if (success) {
+      setLoading(true);
+      
+      // Ensure BASE_URL is properly defined
+      const apiUrl = BASE_URL || 'http://localhost:8080';
+      
+      // Create form data for x-www-form-urlencoded format (required by API)
+      const formData = new URLSearchParams();
+      formData.append('username', data.username);
+      formData.append('password', data.password);
+      
+      const response = await fetch(`${apiUrl}${AUTH_LOGIN}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData
+      });
+
+      if (response.status === 200) {
+        const responseData = await response.json();
+        
+        // Store token in localStorage
+        localStorage.setItem('token', responseData.access_token);
+        
+        // Update authentication state
+        setIsAuthenticated(true);
+        
         // Will redirect via the useEffect when isAuthenticated changes
+      } else {
+        setSubmitError('Invalid username or password. Please try again.');
       }
     } catch (error) {
-      setSubmitError('Invalid username or password. Please try again.');
+      console.error('Login error:', error);
+      setSubmitError('Unable to connect to the server. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 

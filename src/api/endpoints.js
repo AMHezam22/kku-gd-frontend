@@ -1,5 +1,5 @@
 // Base API URL - change this to match your backend URL
-export const BASE_URL = process.env.REACT_APP_BASE_URL;
+export const BASE_URL = process.env.REACT_APP_API_URL;
 
 // Auth endpoints
 export const AUTH_REGISTER = '/auth/register';

@@ -1,23 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../hooks/useAuth';
+import { BASE_URL, AUTH_REGISTER } from '../api/endpoints'; // Import from endpoints.js
 
 const SignUpPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [submitError, setSubmitError] = useState(null);
-  const { register: registerUser, loading } = useAuth();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       setSubmitError(null);
-      const success = await registerUser(data);
-      if (success) {
-        navigate('/signin', { state: { message: 'Registration successful! Please sign in.' } });
+      setLoading(true);
+      
+      const response = await fetch(`${BASE_URL}${AUTH_REGISTER}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  console.log(BASE_URL, AUTH_REGISTER, data);
+
+      if (response.status === 200) {
+        // Success - redirect to home page
+        navigate('/');
+      } else if (response.status === 422) {
+        // Validation error
+        setSubmitError('Invalid information provided. Please check your details and try again.');
+      } else {
+        // Other errors
+        const errorData = await response.json();
+        setSubmitError(errorData.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      setSubmitError(error.message || 'Registration failed. Please try again.');
+      setSubmitError('Connection error. Please check your network and try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
